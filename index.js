@@ -14,11 +14,10 @@ console.log('Process.env:', process.env);
 const CHANNEL_ID = process.env.CHANNEL_ID;
 const GUILD_ID = process.env.GUILD_ID;
 
-let isReminderActive = true; // Toggle for reminders
-let reminderInterval =  1000; // Default 20 minutes
-let reminderMessage = 'Time to drink some water! 💧'; // Default message
+let isReminderActive = true; 
+let reminderInterval =  1000; 
+let reminderMessage = 'Time to drink some water! 💧'; 
 
-// Array of water facts
 const waterFacts = [
     'Did you know? The human body is about 60% water!',
     'Drinking water can boost your energy levels!',
@@ -27,7 +26,6 @@ const waterFacts = [
     'Staying hydrated can improve your focus! 💧',
 ];
 
-// Command descriptions for !commands
 const commands = {
     '!startwater': 'Start the water reminders (Admin only).',
     '!stopwater': 'Stop the water reminders (Admin only).',
@@ -43,11 +41,9 @@ client.once('ready', () => {
     setTimeout(startWaterReminder, 5000);
 });
 
-// Command handler
 client.on('messageCreate', (message) => {
     if (!message.guild || !message.member) return; // Ignore DMs
 
-    // Start/Stop commands
     if (message.content === '!startwater' && message.member.permissions.has('MANAGE_GUILD')) {
         isReminderActive = true;
         message.reply('Water reminders started! 💧');
@@ -56,7 +52,6 @@ client.on('messageCreate', (message) => {
         message.reply('Water reminders stopped! 💧');
     }
 
-    // Set interval command
     if (message.content.startsWith('!setinterval') && message.member.permissions.has('MANAGE_GUILD')) {
         const args = message.content.split(' ');
         const minutes = parseInt(args[1]);
@@ -68,7 +63,6 @@ client.on('messageCreate', (message) => {
         }
     }
 
-    // Set custom message command
     if (message.content.startsWith('!setmessage') && message.member.permissions.has('MANAGE_GUILD')) {
         const newMessage = message.content.replace('!setmessage', '').trim();
         if (newMessage) {
@@ -79,7 +73,6 @@ client.on('messageCreate', (message) => {
         }
     }
 
-    // Commands help
     if (message.content === '!commands') {
         const commandList = Object.entries(commands)
             .map(([cmd, desc]) => `**${cmd}** - ${desc}`)
@@ -90,7 +83,7 @@ client.on('messageCreate', (message) => {
 
 function startWaterReminder() {
     setInterval(async () => {
-        if (!isReminderActive) return; // Skip if inactive
+        if (!isReminderActive) return; 
         try {
             if (!CHANNEL_ID) {
                 console.log('Channel ID not set in .env!');
@@ -118,12 +111,11 @@ function startWaterReminder() {
                 return;
             }
 
-            // Get an array of member mentions, excluding the bot
             const memberMentions = members.map(member => {
                 if (member.user.id !== client.user.id) {
                     return `<@${member.id}>`;
                 }
-            }).filter(Boolean); // Remove undefined values
+            }).filter(Boolean); 
             const limitedMentions = memberMentions.slice(0, 50);
 
             const mentionString = limitedMentions.join(', ');
